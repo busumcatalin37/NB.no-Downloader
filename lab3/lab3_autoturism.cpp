@@ -1,292 +1,377 @@
 /*
-================================================================================
- TEMA LAB3
-================================================================================
- APLICATIE: Alegeti-va un tip de date - implementat cu ajutorul unei clase - cu
- min 3 atribute (date membre) - de ex. clasa persoana, clasa autoturism, clasa
- apartament, clasa excursie, clasa tren, clasa biblioteca etc. - si prelucrari
- asupra datelor de acest tip:
-   - Citirea tuturor datelor (intr-un vector clasic/STL)
-   - Afisarea tuturor datelor (intr-un vector clasic/STL)
-   - Fc de tip set/get
-   - Operator insertor/extractor
-   - Trei prelucrari asupra datelor memorate
- Veti folosi pentru prelucrari functii.
+TEMA LAB3
+APLICATIE: Alegeti-va un tip de date - implementat cu ajutorul unei clase - cu
+min 3 atribute (date membre) - de ex, clasa persoana, clasa autoturism, clasa
+apartament, clasa excursie, clasa tren, clasa biblioteca, etc.) si prelucrari
+asupra datelor de acest tip:
+-	Citirea tuturor datelor (intr-un vector clasic/STL)
+-	Afisarea tuturor datelor (intr-un vector clasic/STL)
+-	Fc de tip set/get
+-	Operator insertor/extractor
+-	Trei prelucrari asupa datelor memorate
+Veti folosi ptr prelucrari functii.
 
---------------------------------------------------------------------------------
- TEMA ALEASA: clasa AUTOTURISM
---------------------------------------------------------------------------------
- Se considera clasa Autoturism cu atributele:
-   - marca           (string)
-   - model           (string)
-   - anFabricatie    (int)
-   - pret            (double, in euro)
-   - kilometraj      (int)
+------------------------------------------------------------------------------
+TEMA ALEASA
 
- Datele a n autoturisme se memoreaza intr-un vector STL (vector<Autoturism>).
- Se cer:
-   1. Citirea datelor celor n autoturisme (cu operatorul extractor >>).
-   2. Afisarea datelor tuturor autoturismelor (cu operatorul insertor <<).
-   3. Functii set/get pentru toate atributele.
-   4. Prelucrari:
-      P1. Afisarea autoturismelor unei marci date si calculul pretului mediu
-          al acestora.
-      P2. Determinarea celui mai ieftin autoturism fabricat dupa un an dat
-          (inclusiv acel an).
-      P3. Sortarea autoturismelor crescator dupa pret si, la pret egal,
-          crescator dupa kilometraj; afisarea vectorului sortat.
-================================================================================
+Sa se defineasca tipul de date auto (autoturism) cu atributele (date membre):
+- marca (tip string)
+- model (tip string)
+- an (anul fabricatiei)
+- pret (in euro)
+- km (kilometrajul)
+
+Fc:
+- Constr (cu param impliciti)
+- Destr
+- Met de tip get si set
+- Operator insertor, extractor
+- Op atribuire
+- Op < (compara preturile a doua autoturisme)
+
+PRELUCR
+- cit inf despre autoturisme de la tast
+- afisarea tuturor autoturismelor
+- P1: afisarea autoturismelor unei marci date si a pretului mediu al acestora
+- P2: afisarea celui mai ieftin autoturism fabricat incepand cu un an dat
+- P3: sortarea autoturismelor crescator dupa pret si afisarea lor
+
+MODURI DE LUCRU
+1) vect clasic (alocare statica / dinamica)
+2) STL (vector STL)
 */
 
+
 #include <iostream>
-#include <iomanip>
 #include <string>
 #include <vector>
 #include <algorithm>
-
 using namespace std;
 
-class Autoturism
-{
-private:
+class autoturism{
+//dat membre, IMPLICIT private
     string marca;
     string model;
-    int anFabricatie;
+    int an;
     double pret;
-    int kilometraj;
+    int km;
 
 public:
-    // constructori
-    Autoturism() : marca(""), model(""), anFabricatie(0), pret(0), kilometraj(0) {}
-    Autoturism(string ma, string mo, int an, double p, int km)
-        : marca(ma), model(mo), anFabricatie(an), pret(p), kilometraj(km) {}
-
-    // functii de tip get
-    string getMarca() const { return marca; }
-    string getModel() const { return model; }
-    int getAnFabricatie() const { return anFabricatie; }
-    double getPret() const { return pret; }
-    int getKilometraj() const { return kilometraj; }
-
-    // functii de tip set
-    void setMarca(string ma) { marca = ma; }
-    void setModel(string mo) { model = mo; }
-    void setAnFabricatie(int an) { if (an > 1885) anFabricatie = an; }
-    void setPret(double p) { if (p >= 0) pret = p; }
-    void setKilometraj(int km) { if (km >= 0) kilometraj = km; }
-
-    // operator extractor (citire)
-    friend istream& operator>>(istream& in, Autoturism& a);
-    // operator insertor (afisare)
-    friend ostream& operator<<(ostream& out, const Autoturism& a);
+    //constr cu param impliciti (2 in 1)
+    autoturism(string Marca="Necunoscuta", string Model="Necunoscut",
+               int An=2000, double Pret=0, int Km=0);
+    //destr
+    ~autoturism();
+    //met tip set
+    void setMarca(string);
+    void setModel(string);
+    void setAn(int);
+    void setPret(double);
+    void setKm(int);
+    //met tip get
+    string getMarca() const;
+    string getModel() const;
+    int getAn() const;
+    double getPret() const;
+    int getKm() const;
+    //op insertor
+    friend ostream & operator<<(ostream &, const autoturism &);
+    //op extractor
+    friend istream & operator>>(istream &, autoturism &);
+    //op atribuire
+    autoturism & operator=(const autoturism &);
+    //op < (prin metoda) - compara preturile
+    bool operator<(const autoturism &) const;
 };
 
-istream& operator>>(istream& in, Autoturism& a)
+
+autoturism::autoturism(string Marca, string Model, int An, double Pret, int Km)
 {
-    cout << "  Marca: ";            in >> a.marca;
-    cout << "  Model: ";            in >> a.model;
-    cout << "  An fabricatie: ";    in >> a.anFabricatie;
-    cout << "  Pret (euro): ";      in >> a.pret;
-    cout << "  Kilometraj: ";       in >> a.kilometraj;
-    return in;
+    marca = Marca;
+    model = Model;
+    an = An;
+    pret = Pret;
+    km = Km;
 }
 
-ostream& operator<<(ostream& out, const Autoturism& a)
+autoturism::~autoturism()
 {
-    out << left << setw(12) << a.marca
-        << setw(12) << a.model
-        << right << setw(6) << a.anFabricatie
-        << setw(12) << fixed << setprecision(2) << a.pret
-        << setw(10) << a.kilometraj;
-    return out;
+    //nu exista memorie alocata dinamic in clasa, nu avem ce elibera
+    //cout<<"Destr ptr "<<*this<<endl;
 }
 
-// ---------------------------------------------------------------------------
-// Functii pentru citire / afisare
-// ---------------------------------------------------------------------------
+void autoturism::setMarca(string s)
+{
+    marca = s;
+}
 
-void citireVector(vector<Autoturism>& v)
+void autoturism::setModel(string s)
+{
+    model = s;
+}
+
+void autoturism::setAn(int a)
+{
+    an = a;
+}
+
+void autoturism::setPret(double p)
+{
+    if (p >= 0)
+        pret = p;
+}
+
+void autoturism::setKm(int k)
+{
+    if (k >= 0)
+        km = k;
+}
+
+string autoturism::getMarca() const
+{
+    return marca;
+}
+
+string autoturism::getModel() const
+{
+    return model;
+}
+
+int autoturism::getAn() const
+{
+    return an;
+}
+
+double autoturism::getPret() const
+{
+    return pret;
+}
+
+int autoturism::getKm() const
+{
+    return km;
+}
+
+ostream & operator<<(ostream &ies, const autoturism &a)
+{
+    ies<<"AUTO "<<a.marca<<" "<<a.model<<", an "<<a.an
+       <<", pret "<<a.pret<<" euro, "<<a.km<<" km";
+    return ies;
+}
+
+istream & operator>>(istream &intr, autoturism &a)
+{
+    cout<<"Marca ="; intr>>a.marca;
+    cout<<"Model ="; intr>>a.model;
+    cout<<"An ="; intr>>a.an;
+    cout<<"Pret ="; intr>>a.pret;
+    cout<<"Km ="; intr>>a.km;
+    return intr;
+}
+
+autoturism & autoturism::operator=(const autoturism &a)
+{
+    if (this != &a){        //evitam atribuirea x = x
+        marca = a.marca;    // this->marca = a.marca;
+        model = a.model;
+        an = a.an;
+        pret = a.pret;
+        km = a.km;
+    }
+    return *this;
+}
+
+bool autoturism::operator<(const autoturism &b) const
+{
+    //compara pretul ob-lui curent cu pretul lui b
+    return pret < b.pret;
+}
+
+
+//VARIANTA 1 - vect clasic
+void cit(autoturism v[], int n)
+{
+    for (int i=0; i<n; i++){
+        cout<<"\nAstept inf despre autoturismul "<<i+1<<endl;
+        cin>>v[i];
+        //cin>>*(v+i);
+    }
+}
+
+void afis(autoturism v[], int n)
+{
+    for (int i=0; i<n; i++)
+        cout<<i+1<<". "<<v[i]<<endl;
+}
+
+//P1 - autoturismele unei marci date si pretul lor mediu
+void afisMarca(autoturism v[], int n, string marca)
+{
+    double s=0;
+    int nr=0;
+    cout<<"\nAutoturisme marca "<<marca<<":\n";
+    for (int i=0; i<n; i++)
+        if (v[i].getMarca() == marca){
+            cout<<v[i]<<endl;
+            s += v[i].getPret();
+            nr++;
+        }
+    if (nr == 0)
+        cout<<"Nu exista.\n";
+    else
+        cout<<"PRET MEDIU = "<<s/nr<<" euro\n";
+}
+
+//P2 - cel mai ieftin autoturism fabricat incepand cu anul dat
+void celMaiIeftin(autoturism v[], int n, int an)
+{
+    int poz=-1;
+    for (int i=0; i<n; i++)
+        if (v[i].getAn() >= an)
+            if (poz == -1 || v[i] < v[poz])
+                poz = i;
+    if (poz == -1)
+        cout<<"\nNu exista autoturisme fabricate din "<<an<<" incoace.\n";
+    else
+        cout<<"\nCel mai ieftin din "<<an<<" incoace: "<<v[poz]<<endl;
+}
+
+//P3 - sortare crescatoare dupa pret (metoda bulelor, cu op < si op =)
+void sortPret(autoturism v[], int n)
+{
+    autoturism aux;
+    for (int i=0; i<n-1; i++)
+        for (int j=i+1; j<n; j++)
+            if (v[j] < v[i]){
+                aux = v[i];
+                v[i] = v[j];
+                v[j] = aux;
+            }
+}
+
+
+//VARIANTA 2 - STL
+void citSTLvect(vector <autoturism> &v)
 {
     int n;
-    cout << "Numar de autoturisme: ";
-    cin >> n;
-    v.clear();
-    for (int i = 0; i < n; i++)
-    {
-        Autoturism a;
-        cout << "Autoturismul " << i + 1 << ":\n";
-        cin >> a;
+    cout<<"Cate autoturisme? "; cin>>n;
+    autoturism a;
+    for (int i=0; i<n; i++){
+        cout<<"\nAstept inf despre autoturismul "<<i+1<<endl;
+        cin>>a;
         v.push_back(a);
     }
 }
 
-void afisareCap()
+void afisSTLvect(const vector <autoturism> &v)
 {
-    cout << left << setw(4) << "Nr"
-         << setw(12) << "Marca" << setw(12) << "Model"
-         << right << setw(6) << "An" << setw(12) << "Pret"
-         << setw(10) << "Km" << "\n";
-    cout << string(56, '-') << "\n";
+    for (unsigned int i=0; i<v.size(); i++)
+        cout<<i+1<<". "<<v[i]<<endl;
 }
 
-void afisareVector(const vector<Autoturism>& v)
+//P1 - varianta STL (parcurgere cu iterator)
+void afisMarcaSTL(const vector <autoturism> &v, string marca)
 {
-    if (v.empty())
-    {
-        cout << "Nu exista autoturisme.\n";
-        return;
-    }
-    afisareCap();
-    for (size_t i = 0; i < v.size(); i++)
-        cout << left << setw(4) << i + 1 << v[i] << "\n";
-}
-
-// ---------------------------------------------------------------------------
-// P1. Autoturismele unei marci date + pretul mediu al acestora
-// ---------------------------------------------------------------------------
-double pretMediuMarca(const vector<Autoturism>& v, const string& marca)
-{
-    double suma = 0;
-    int nr = 0;
-    for (size_t i = 0; i < v.size(); i++)
-        if (v[i].getMarca() == marca)
-        {
-            if (nr == 0) afisareCap();
-            cout << left << setw(4) << nr + 1 << v[i] << "\n";
-            suma += v[i].getPret();
+    double s=0;
+    int nr=0;
+    cout<<"\nAutoturisme marca "<<marca<<":\n";
+    for (vector <autoturism>::const_iterator it=v.begin(); it!=v.end(); it++)
+        if (it->getMarca() == marca){
+            cout<<*it<<endl;
+            s += it->getPret();
             nr++;
         }
     if (nr == 0)
-        return -1;          // nu exista autoturisme de marca respectiva
-    return suma / nr;
+        cout<<"Nu exista.\n";
+    else
+        cout<<"PRET MEDIU = "<<s/nr<<" euro\n";
 }
 
-// ---------------------------------------------------------------------------
-// P2. Cel mai ieftin autoturism fabricat incepand cu un an dat
-//     Returneaza pozitia in vector sau -1 daca nu exista.
-// ---------------------------------------------------------------------------
-int celMaiIeftinDupaAn(const vector<Autoturism>& v, int an)
+//P2 - varianta STL
+void celMaiIeftinSTL(const vector <autoturism> &v, int an)
 {
-    int poz = -1;
-    for (size_t i = 0; i < v.size(); i++)
-        if (v[i].getAnFabricatie() >= an)
-            if (poz == -1 || v[i].getPret() < v[poz].getPret())
-                poz = (int)i;
-    return poz;
+    int poz=-1;
+    for (unsigned int i=0; i<v.size(); i++)
+        if (v[i].getAn() >= an)
+            if (poz == -1 || v[i] < v[poz])
+                poz = i;
+    if (poz == -1)
+        cout<<"\nNu exista autoturisme fabricate din "<<an<<" incoace.\n";
+    else
+        cout<<"\nCel mai ieftin din "<<an<<" incoace: "<<v[poz]<<endl;
 }
 
-// ---------------------------------------------------------------------------
-// P3. Sortare crescatoare dupa pret, la pret egal dupa kilometraj
-// ---------------------------------------------------------------------------
-bool comparaPretKm(const Autoturism& a, const Autoturism& b)
+//P3 - varianta STL (alg sort din <algorithm>, foloseste op <)
+void sortPretSTL(vector <autoturism> &v)
 {
-    if (a.getPret() != b.getPret())
-        return a.getPret() < b.getPret();
-    return a.getKilometraj() < b.getKilometraj();
+    sort(v.begin(), v.end());
 }
 
-void sortarePret(vector<Autoturism>& v)
-{
-    sort(v.begin(), v.end(), comparaPretKm);
-}
 
-// ---------------------------------------------------------------------------
-// Program principal - meniu
-// ---------------------------------------------------------------------------
 int main()
 {
-    vector<Autoturism> v;
-    int opt;
+/******
+VARIANTA 1
+//alocare statica
+autoturism V[100];
+int n; //nr autoturisme
+cout<<"Nr autoturisme ="; cin>>n;
+cit(V, n);
+cout<<"\n\nTOATE AUTOTURISMELE\n";
+afis(V, n);
 
-    do
-    {
-        cout << "\n========== MENIU ==========\n";
-        cout << "1. Citire autoturisme\n";
-        cout << "2. Afisare autoturisme\n";
-        cout << "3. Modificare pret (set/get)\n";
-        cout << "4. P1 - Autoturismele unei marci si pretul mediu\n";
-        cout << "5. P2 - Cel mai ieftin autoturism fabricat dupa un an dat\n";
-        cout << "6. P3 - Sortare dupa pret (si kilometraj)\n";
-        cout << "0. Iesire\n";
-        cout << "Optiune: ";
-        if (!(cin >> opt)) break;
+//ALOCARE DINAM
+autoturism *a;
+int nr;
+cout<<"Cate autoturisme? "; cin>>nr;
+a = new autoturism[nr];
+cit(a, nr);
+cout<<"\n\nTOATE AUTOTURISMELE\n";
+afis(a, nr);
 
-        switch (opt)
-        {
-        case 1:
-            citireVector(v);
-            break;
+string m;
+cout<<"\nMarca cautata ="; cin>>m;
+afisMarca(a, nr, m);
 
-        case 2:
-            afisareVector(v);
-            break;
+int an;
+cout<<"\nAnul minim de fabricatie ="; cin>>an;
+celMaiIeftin(a, nr, an);
 
-        case 3:
-        {
-            // exemplu de utilizare a functiilor set/get
-            int k;
-            double p;
-            cout << "Numarul de ordine al autoturismului (1.." << v.size() << "): ";
-            cin >> k;
-            if (k < 1 || k > (int)v.size())
-            {
-                cout << "Pozitie invalida.\n";
-                break;
-            }
-            cout << v[k - 1].getMarca() << " " << v[k - 1].getModel()
-                 << " are pretul actual " << v[k - 1].getPret() << " euro.\n";
-            cout << "Pret nou: ";
-            cin >> p;
-            v[k - 1].setPret(p);
-            cout << "Pretul a devenit " << v[k - 1].getPret() << " euro.\n";
-            break;
-        }
+sortPret(a, nr);
+cout<<"\n\nSORTATE DUPA PRET\n";
+afis(a, nr);
 
-        case 4:
-        {
-            string marca;
-            cout << "Marca cautata: ";
-            cin >> marca;
-            double m = pretMediuMarca(v, marca);
-            if (m < 0)
-                cout << "Nu exista autoturisme marca " << marca << ".\n";
-            else
-                cout << "Pretul mediu pentru marca " << marca << ": "
-                     << fixed << setprecision(2) << m << " euro\n";
-            break;
-        }
+delete [] a;
+***************/
 
-        case 5:
-        {
-            int an;
-            cout << "Anul minim de fabricatie: ";
-            cin >> an;
-            int poz = celMaiIeftinDupaAn(v, an);
-            if (poz == -1)
-                cout << "Nu exista autoturisme fabricate din " << an << " incoace.\n";
-            else
-            {
-                cout << "Cel mai ieftin autoturism fabricat din " << an << " incoace:\n";
-                afisareCap();
-                cout << left << setw(4) << poz + 1 << v[poz] << "\n";
-            }
-            break;
-        }
+//VARIANTA 2 - STL
+vector <autoturism> x;
 
-        case 6:
-            sortarePret(v);
-            cout << "Autoturismele sortate dupa pret:\n";
-            afisareVector(v);
-            break;
+citSTLvect(x);
 
-        case 0:
-            cout << "La revedere!\n";
-            break;
+cout<<"\n\nTOATE AUTOTURISMELE\n";
+afisSTLvect(x);
 
-        default:
-            cout << "Optiune invalida.\n";
-        }
-    } while (opt != 0);
+//exemplu set/get
+if (!x.empty()){
+    double p;
+    cout<<"\nPretul actual al primului autoturism: "<<x[0].getPret()<<" euro";
+    cout<<"\nPret nou ="; cin>>p;
+    x[0].setPret(p);
+    cout<<"Dupa modificare: "<<x[0]<<endl;
+}
 
-    return 0;
+string m;
+cout<<"\nMarca cautata ="; cin>>m;
+afisMarcaSTL(x, m);
+
+int an;
+cout<<"\nAnul minim de fabricatie ="; cin>>an;
+celMaiIeftinSTL(x, an);
+
+sortPretSTL(x);
+cout<<"\n\nSORTATE DUPA PRET\n";
+afisSTLvect(x);
+
+return 0;
 }
